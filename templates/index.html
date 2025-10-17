@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Loja de Carros</title>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; padding: 20px; color: #333; }
+    h1 { text-align: center; }
+    table { border-collapse: collapse; width: 60%; margin: 20px auto; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #eee; }
+    form { display: flex; flex-direction: column; width: 300px; margin: 0 auto; }
+    input, button { padding: 8px; margin: 5px 0; }
+    .api-test { text-align: center; margin: 20px; }
+    .delete-btn { background-color: #e74c3c; color: #fff; border: none; cursor: pointer; padding: 5px 10px; }
+    .delete-btn:hover { background-color: #c0392b; }
+  </style>
+</head>
+<body>
+  <h1>Loja de Carros</h1>
+
+  <h2>Adicionar Carro</h2>
+  <form action="/add_carro" method="POST">
+    <input type="text" name="modelo" placeholder="Modelo" required>
+    <input type="number" name="preco" placeholder="Preço" required>
+    <button type="submit">Adicionar</button>
+  </form>
+
+  <h2>Carros Cadastrados</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Modelo</th>
+        <th>Preço</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for carro in carros %}
+      <tr>
+        <td>{{ carro.id }}</td>
+        <td>{{ carro.modelo }}</td>
+        <td>{{ carro.preco }}</td>
+        <td>
+          <form action="/delete_carro/{{ carro.id }}" method="GET" onsubmit="return confirm('Deseja realmente excluir este carro?');">
+            <button type="submit" class="delete-btn">Excluir</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="4">Nenhum carro cadastrado.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Consulta de CEP</h2>
+  <form action="/consulta_cep" method="POST">
+    <input type="text" name="cep" placeholder="Digite o CEP (somente números)" required>
+    <button type="submit">Consultar CEP</button>
+  </form>
+
+  {% if cep_resultado %}
+    <h3>Resultado da Consulta:</h3>
+    <ul>
+      <li><strong>CEP:</strong> {{ cep_resultado.cep }}</li>
+      <li><strong>Logradouro:</strong> {{ cep_resultado.logradouro }}</li>
+      <li><strong>Bairro:</strong> {{ cep_resultado.bairro }}</li>
+      <li><strong>Cidade:</strong> {{ cep_resultado.localidade }}</li>
+      <li><strong>Estado:</strong> {{ cep_resultado.uf }}</li>
+      <li><strong>DDD:</strong> {{ cep_resultado.ddd }}</li>
+    </ul>
+  {% endif %}
+
+  <div class="api-test">
+    <h2>Testar API</h2>
+    <form action="/api_test" method="GET">
+      <button type="submit">Testar API de Teste</button>
+    </form>
+  </div>
+
+</body>
+</html>
